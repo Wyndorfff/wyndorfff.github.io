@@ -1,0 +1,67 @@
+.github/workflows/actualiser-podcasts.yml
+name: Actualiser les podcasts et publier le site
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publication-premier-visionnement
+  cancel-in-progress: false
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Recuperer les fichiers du site
+        uses: actions/checkout@v4
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Recuperer les episodes publics Podbean
+        run: python scripts/maj_catalogue.py
+
+      - name: Conserver les anciens episodes dans GitHub
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/episodes.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Actualiser le catalogue des podcasts'
+            git push
+          fi
+
+      - name: Preparer la publication
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html banniere.png _site/
+          cp data/episodes.json _site/data/
+
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparer les fichiers pour GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Publier le site
+        id: deploiement
+        uses: actions/deploy-pages@v4
