@@ -135,6 +135,33 @@
       nav { gap: 12px 18px; }
       .carte { min-height: 0; }
     }
+
+    /* Catalogue automatisé : deux podcasts, recherche et écoute */
+    .sous-titre { margin: -6px 0 20px; color: var(--secondaire); }
+    .barre-outils { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 18px 0; }
+    .onglets { display: flex; gap: 8px; flex-wrap: wrap; }
+    .onglet, .plus {
+      cursor: pointer; background: #242838; border: 1px solid #4e5367;
+      color: white; border-radius: 9px; padding: 10px 13px;
+      font-weight: 700; font: inherit;
+    }
+    .onglet[aria-pressed="true"] { background: #66235d; border-color: var(--mauve); }
+    .onglet:hover, .onglet:focus-visible, .plus:hover, .plus:focus-visible { border-color: var(--jaune); }
+    .recherche { background: #10131c; color: white; border: 1px solid #62667a; border-radius: 9px; padding: 11px 13px; min-width: 240px; max-width: 100%; font: inherit; }
+    .recherche:focus-visible { outline: 2px solid var(--bleu); outline-offset: 2px; }
+    .etat-catalogue { color: var(--secondaire); margin: 8px 0 20px; }
+    .episode { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .episode-image { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #11141e; border-bottom: 1px solid var(--bordure); }
+    .episode-corps { padding: 20px; display: flex; flex-direction: column; gap: 9px; flex-grow: 1; }
+    .episode-etiquette { font-size: .8rem; color: var(--bleu); font-weight: bold; }
+    .episode h3 { font-size: 1.13rem; line-height: 1.35; margin: 0; color: var(--texte); }
+    .episode-date { color: var(--secondaire); font-size: .83rem; }
+    .episode-description { color: var(--secondaire); font-size: .92rem; margin: 0; }
+    .episode-audio { display: block; width: 100%; margin-top: auto; }
+    .episode-lien { color: var(--jaune); text-underline-offset: 3px; font-weight: bold; margin-top: 3px; }
+    .bouton-plus { text-align: center; padding: 28px 0 0; }
+    .plus[hidden] { display: none; }
+    @media (max-width: 600px) { .recherche { width: 100%; } }
   </style>
 </head>
 <body>
@@ -143,6 +170,7 @@
     <nav aria-label="Navigation principale">
       <a href="#accueil">Accueil</a>
       <a href="#podcasts">Podcasts</a>
+      <a href="#episodes">Épisodes</a>
       <a href="#franchises">Franchises</a>
       <a href="#patreon">Patreon</a>
     </nav>
@@ -160,14 +188,30 @@
         <article class="carte">
           <h3>Premier Visionnement</h3>
           <p>Discussions et rétrospectives autour du cinéma et des séries télévisées.</p>
-          <span class="statut">Catalogue à intégrer</span>
+          <span class="statut">Flux public Podbean</span>
         </article>
         <article class="carte">
           <h3>Autopsie du Jeu Vidéo</h3>
           <p>Une émission distincte consacrée aux jeux vidéo.</p>
-          <span class="statut">Catalogue à intégrer</span>
+          <span class="statut">Flux public Podbean</span>
         </article>
       </div>
+    </section>
+
+    <section id="episodes">
+      <h2 class="titre-section">Catalogue des épisodes</h2>
+      <p class="sous-titre">Les épisodes publics sont récupérés automatiquement depuis les flux RSS Podbean.</p>
+      <div class="barre-outils">
+        <div class="onglets" role="group" aria-label="Choisir le podcast">
+          <button class="onglet" type="button" data-podcast="tous" aria-pressed="true">Tous</button>
+          <button class="onglet" type="button" data-podcast="premier-visionnement" aria-pressed="false">Premier Visionnement</button>
+          <button class="onglet" type="button" data-podcast="autopsie-du-jeu-video" aria-pressed="false">Autopsie du Jeu Vidéo</button>
+        </div>
+        <input id="recherche" class="recherche" type="search" aria-label="Rechercher un épisode" placeholder="Rechercher un épisode…">
+      </div>
+      <p class="etat-catalogue" id="etat-catalogue" role="status" aria-live="polite">Chargement du catalogue…</p>
+      <div id="liste-episodes" class="grille"></div>
+      <div class="bouton-plus"><button type="button" class="plus" id="voir-plus" hidden>Afficher plus d'épisodes</button></div>
     </section>
 
     <section id="franchises">
@@ -202,5 +246,112 @@
   <footer>
     Premier Visionnement — Site en construction
   </footer>
+  <script>
+    "use strict";
+    // Affichage local uniquement. La synchronisation RSS se fait sur GitHub Actions.
+    const etat = document.getElementById("etat-catalogue");
+    const liste = document.getElementById("liste-episodes");
+    const recherche = document.getElementById("recherche");
+    const plus = document.getElementById("voir-plus");
+    const onglets = [...document.querySelectorAll(".onglet")];
+    let episodes = [];
+    let podcastActif = "tous";
+    let nombreVisible = 12;
+
+    function urlPublique(url) {
+      try {
+        const adresse = new URL(url);
+        return ["http:", "https:"].includes(adresse.protocol) ? adresse.href : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function element(tag, classe, texte) {
+      const node = document.createElement(tag);
+      if (classe) node.className = classe;
+      if (texte !== undefined) node.textContent = texte;
+      return node;
+    }
+
+    function carteEpisode(ep) {
+      const article = element("article", "carte episode");
+      const image = urlPublique(ep.image || "");
+      if (image) {
+        const img = element("img", "episode-image");
+        img.src = image;
+        img.alt = "Pochette de " + ep.titre;
+        img.loading = "lazy";
+        img.addEventListener("error", () => img.remove());
+        article.appendChild(img);
+      }
+      const corps = element("div", "episode-corps");
+      corps.appendChild(element("span", "episode-etiquette", ep.podcast_nom));
+      corps.appendChild(element("h3", "", ep.titre));
+      if (ep.date) {
+        const date = new Date(ep.date);
+        if (!Number.isNaN(date.getTime())) {
+          corps.appendChild(element("span", "episode-date", new Intl.DateTimeFormat("fr-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "America/Toronto" }).format(date)));
+        }
+      }
+      if (ep.description) {
+        const extrait = ep.description.length > 180 ? ep.description.slice(0, 177) + "…" : ep.description;
+        corps.appendChild(element("p", "episode-description", extrait));
+      }
+      const audio = urlPublique(ep.audio || "");
+      if (audio) {
+        const lecteur = element("audio", "episode-audio");
+        lecteur.controls = true;
+        lecteur.preload = "none";
+        lecteur.src = audio;
+        lecteur.setAttribute("aria-label", "Écouter " + ep.titre);
+        corps.appendChild(lecteur);
+      }
+      const lien = urlPublique(ep.lien || "");
+      if (lien) {
+        const a = element("a", "episode-lien", "Voir l'épisode sur Podbean");
+        a.href = lien;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        corps.appendChild(a);
+      }
+      article.appendChild(corps);
+      return article;
+    }
+
+    function afficher() {
+      const q = recherche.value.trim().toLocaleLowerCase("fr-CA");
+      const filtres = episodes.filter(ep =>
+        (podcastActif === "tous" || ep.podcast === podcastActif) &&
+        (!q || (ep.titre + " " + (ep.description || "") + " " + (ep.categories_rss || []).join(" ")).toLocaleLowerCase("fr-CA").includes(q))
+      );
+      liste.replaceChildren(...filtres.slice(0, nombreVisible).map(carteEpisode));
+      if (!episodes.length) {
+        etat.textContent = "Le catalogue attend sa première synchronisation automatique sur GitHub.";
+      } else {
+        etat.textContent = `${filtres.length} épisode(s) trouvé(s) — ${episodes.length} au catalogue.`;
+      }
+      plus.hidden = filtres.length <= nombreVisible;
+    }
+
+    onglets.forEach(btn => btn.addEventListener("click", () => {
+      podcastActif = btn.dataset.podcast;
+      nombreVisible = 12;
+      onglets.forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      afficher();
+    }));
+    recherche.addEventListener("input", () => { nombreVisible = 12; afficher(); });
+    plus.addEventListener("click", () => { nombreVisible += 12; afficher(); });
+
+    fetch("data/episodes.json", { cache: "no-store" })
+      .then(rep => { if (!rep.ok) throw new Error("HTTP " + rep.status); return rep.json(); })
+      .then(data => {
+        episodes = Array.isArray(data.episodes) ? data.episodes : [];
+        afficher();
+      })
+      .catch(() => {
+        etat.textContent = "Catalogue non disponible pour l'instant. Il apparaîtra après la première synchronisation GitHub.";
+      });
+  </script>
 </body>
 </html>
