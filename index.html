@@ -1,121 +1,206 @@
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-CA">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premier Visionnement</title>
-
+  <meta name="description" content="Premier Visionnement : podcasts sur le cinéma, les séries télévisées et les jeux vidéo.">
+  <title>Premier Visionnement | Podcasts</title>
   <style>
+    :root {
+      --fond: #0a0b10;
+      --surface: #181b25;
+      --bordure: #333746;
+      --texte: #f7f7f9;
+      --secondaire: #bcc1ce;
+      --mauve: #c532a8;
+      --bleu: #19a7df;
+      --jaune: #e8b92c;
+    }
+
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111318;
-      color: white;
+      background: var(--fond);
+      color: var(--texte);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
     }
 
-    header {
-      background: #20242c;
-      padding: 25px;
-      text-align: center;
-      border-bottom: 3px solid #c0392b;
+    .banniere {
+      display: block;
+      width: 100%;
+      max-width: 1920px;
+      height: auto;
+      margin: 0 auto;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+    header { background: #000; }
 
-    nav { margin-top: 20px; }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      padding: 18px 20px;
+      background: #151822;
+      border-top: 1px solid #393548;
+      border-bottom: 2px solid var(--mauve);
+    }
 
     nav a {
-      color: white;
+      color: var(--texte);
+      font-weight: bold;
       text-decoration: none;
-      margin: 10px;
+      font-size: 0.95rem;
     }
 
+    nav a:hover, nav a:focus-visible { color: var(--jaune); }
+
     main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
+      width: min(1100px, calc(100% - 36px));
+      margin: 0 auto;
     }
+
+    section { padding: 40px 0; }
 
     .intro {
       text-align: center;
-      margin-bottom: 45px;
+      padding: 52px 0 25px;
     }
 
-    .catalogue {
+    .intro h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); margin: 0 0 12px; }
+    .intro p { color: var(--secondaire); margin: 0; }
+
+    .titre-section {
+      margin: 0 0 20px;
+      padding-left: 14px;
+      border-left: 4px solid var(--mauve);
+      font-size: 1.45rem;
+    }
+
+    .grille {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fit, minmax(240px, 1fr)
-      );
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
     }
 
     .carte {
-      background: #252a33;
-      border-radius: 10px;
-      padding: 30px;
-      min-height: 190px;
+      background: var(--surface);
+      border: 1px solid var(--bordure);
+      border-radius: 12px;
+      padding: 26px;
+      min-height: 176px;
+      transition: transform .2s ease, border-color .2s ease;
     }
 
-    .carte h2 { color: #ff7668; }
+    .carte:hover {
+      transform: translateY(-3px);
+      border-color: var(--bleu);
+    }
 
-    .carte p {
-      color: #d0d0d0;
-      line-height: 1.6;
+    .carte h3 { margin: 0 0 10px; color: var(--jaune); font-size: 1.2rem; }
+    .carte p { margin: 0 0 14px; color: var(--secondaire); }
+
+    .statut {
+      display: inline-block;
+      font-size: .78rem;
+      color: var(--bleu);
+      font-weight: bold;
+      letter-spacing: .03em;
+    }
+
+    .note {
+      background: #11141e;
+      border-left: 3px solid var(--bleu);
+      border-radius: 6px;
+      padding: 18px 20px;
+      color: var(--secondaire);
     }
 
     footer {
+      margin-top: 30px;
+      padding: 28px 16px;
       text-align: center;
-      padding: 30px;
-      color: #999;
+      border-top: 1px solid var(--bordure);
+      color: var(--secondaire);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 28px 0; }
+      .intro { padding-top: 36px; }
+      nav { gap: 12px 18px; }
+      .carte { min-height: 0; }
     }
   </style>
 </head>
-
 <body>
   <header>
-    <h1>PREMIER VISIONNEMENT</h1>
-    <nav>
+    <img class="banniere" src="banniere.png" alt="Bannière du podcast Premier Visionnement">
+    <nav aria-label="Navigation principale">
+      <a href="#accueil">Accueil</a>
       <a href="#podcasts">Podcasts</a>
-      <a href="#podcasts">Catalogue</a>
+      <a href="#franchises">Franchises</a>
       <a href="#patreon">Patreon</a>
     </nav>
   </header>
 
   <main>
-    <section class="intro">
-      <h2>Bienvenue dans notre univers</h2>
-      <p>Cinéma, séries télévisées et jeux vidéo.</p>
+    <section id="accueil" class="intro">
+      <h1>Bienvenue dans notre univers</h1>
+      <p>Cinéma, séries télévisées et jeux vidéo : toutes nos productions au même endroit.</p>
     </section>
 
-    <section id="podcasts" class="catalogue">
-      <div class="carte">
-        <h2>Premier Visionnement</h2>
-        <p>Notre catalogue de podcasts sur le
-        cinéma et les séries télévisées.</p>
+    <section id="podcasts">
+      <h2 class="titre-section">Nos podcasts</h2>
+      <div class="grille">
+        <article class="carte">
+          <h3>Premier Visionnement</h3>
+          <p>Discussions et rétrospectives autour du cinéma et des séries télévisées.</p>
+          <span class="statut">Catalogue à intégrer</span>
+        </article>
+        <article class="carte">
+          <h3>Autopsie du Jeu Vidéo</h3>
+          <p>Une émission distincte consacrée aux jeux vidéo.</p>
+          <span class="statut">Catalogue à intégrer</span>
+        </article>
       </div>
+    </section>
 
-      <div class="carte">
-        <h2>Autopsie du Jeu Vidéo</h2>
-        <p>Notre émission consacrée
-        aux jeux vidéo.</p>
+    <section id="franchises">
+      <h2 class="titre-section">Franchises et collections</h2>
+      <div class="grille">
+        <article class="carte">
+          <h3>Marvel et MCU</h3>
+          <p>Retrouvez les épisodes par univers et par franchise.</p>
+          <span class="statut">Classement à venir</span>
+        </article>
+        <article class="carte">
+          <h3>Alien-Predator</h3>
+          <p>Les films et les discussions réunis dans une même collection.</p>
+          <span class="statut">Classement à venir</span>
+        </article>
+        <article class="carte">
+          <h3>Autres franchises</h3>
+          <p>X-Men, Freddy-Jason, Star Trek et les autres rétrospectives.</p>
+          <span class="statut">Classement à venir</span>
+        </article>
       </div>
+    </section>
 
-      <div class="carte" id="patreon">
-        <h2>Patreon</h2>
-        <p>Épisodes exclusifs, accès anticipés
-        et contenus supplémentaires.</p>
+    <section id="patreon">
+      <h2 class="titre-section">Patreon</h2>
+      <div class="note">
+        Les épisodes exclusifs, les accès anticipés et les contenus supplémentaires seront présentés ici, avec des liens vers Patreon.
       </div>
     </section>
   </main>
 
   <footer>
-    Premier Visionnement
+    Premier Visionnement — Site en construction
   </footer>
 </body>
 </html>
