@@ -150,8 +150,13 @@
     .recherche { background: #10131c; color: white; border: 1px solid #62667a; border-radius: 9px; padding: 11px 13px; min-width: 240px; max-width: 100%; font: inherit; }
     .recherche:focus-visible { outline: 2px solid var(--bleu); outline-offset: 2px; }
     .etat-catalogue { color: var(--secondaire); margin: 8px 0 20px; }
-    .episode { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-    .episode-image { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #11141e; border-bottom: 1px solid var(--bordure); }
+    /* Catalogue visuel : pochettes carrées, sans fiches ni lecteurs */
+    #liste-episodes { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 14px; }
+    .episode { padding: 0; min-height: 0; overflow: hidden; display: block; aspect-ratio: 1 / 1; }
+    .episode-lien-image { display: block; width: 100%; height: 100%; background: #11141e; }
+    .episode-lien-image:focus-visible { outline: 3px solid var(--jaune); outline-offset: -3px; }
+    .episode-image { display: block; width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+    .episode-sans-image { width: 100%; height: 100%; display: grid; place-items: center; padding: 12px; text-align: center; color: var(--texte); font-weight: bold; }
     .episode-corps { padding: 20px; display: flex; flex-direction: column; gap: 9px; flex-grow: 1; }
     .episode-etiquette { font-size: .8rem; color: var(--bleu); font-weight: bold; }
     .episode h3 { font-size: 1.13rem; line-height: 1.35; margin: 0; color: var(--texte); }
@@ -200,7 +205,7 @@
 
     <section id="episodes">
       <h2 class="titre-section">Catalogue des épisodes</h2>
-      <p class="sous-titre">Les épisodes publics sont récupérés automatiquement depuis les flux RSS Podbean.</p>
+      <p class="sous-titre">Cliquez sur une pochette pour ouvrir l’épisode sur Podbean.</p>
       <div class="barre-outils">
         <div class="onglets" role="group" aria-label="Choisir le podcast">
           <button class="onglet" type="button" data-podcast="tous" aria-pressed="true">Tous</button>
@@ -276,46 +281,30 @@
 
     function carteEpisode(ep) {
       const article = element("article", "carte episode");
+      const lien = urlPublique(ep.lien || "");
       const image = urlPublique(ep.image || "");
+      const contenu = lien ? element("a", "episode-lien-image") : element("div", "episode-lien-image");
+      if (lien) {
+        contenu.href = lien;
+        contenu.target = "_blank";
+        contenu.rel = "noopener noreferrer";
+      }
+      contenu.setAttribute("aria-label", (lien ? "Ouvrir sur Podbean : " : "Épisode : ") + ep.titre);
+      contenu.title = ep.titre;
+      const remplacement = () => {
+        contenu.replaceChildren(element("span", "episode-sans-image", ep.titre));
+      };
       if (image) {
         const img = element("img", "episode-image");
         img.src = image;
-        img.alt = "Pochette de " + ep.titre;
+        img.alt = ep.titre;
         img.loading = "lazy";
-        img.addEventListener("error", () => img.remove());
-        article.appendChild(img);
+        img.addEventListener("error", remplacement, { once: true });
+        contenu.appendChild(img);
+      } else {
+        remplacement();
       }
-      const corps = element("div", "episode-corps");
-      corps.appendChild(element("span", "episode-etiquette", ep.podcast_nom));
-      corps.appendChild(element("h3", "", ep.titre));
-      if (ep.date) {
-        const date = new Date(ep.date);
-        if (!Number.isNaN(date.getTime())) {
-          corps.appendChild(element("span", "episode-date", new Intl.DateTimeFormat("fr-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "America/Toronto" }).format(date)));
-        }
-      }
-      if (ep.description) {
-        const extrait = ep.description.length > 180 ? ep.description.slice(0, 177) + "…" : ep.description;
-        corps.appendChild(element("p", "episode-description", extrait));
-      }
-      const audio = urlPublique(ep.audio || "");
-      if (audio) {
-        const lecteur = element("audio", "episode-audio");
-        lecteur.controls = true;
-        lecteur.preload = "none";
-        lecteur.src = audio;
-        lecteur.setAttribute("aria-label", "Écouter " + ep.titre);
-        corps.appendChild(lecteur);
-      }
-      const lien = urlPublique(ep.lien || "");
-      if (lien) {
-        const a = element("a", "episode-lien", "Voir l'épisode sur Podbean");
-        a.href = lien;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        corps.appendChild(a);
-      }
-      article.appendChild(corps);
+      article.appendChild(contenu);
       return article;
     }
 
