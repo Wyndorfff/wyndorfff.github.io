@@ -2,6 +2,18 @@
   "version": 1,
   "episodes": [
     {
+      "id": "5bd577fb01766ebc17ce3968",
+      "podcast": "premier-visionnement",
+      "podcast_nom": "Premier Visionnement",
+      "titre": "Fantastic 4 2015- Les Quatre Fantastiques",
+      "date": "2026-11-16T23:00:00+00:00",
+      "description": "Épisode 3 de la rétrospective Fantastic Four, consacré à Fantastic Four, le remake sorti en 2015 et réalisé par Josh Trank. Rendez-vous sur le site du podcast PREMIERVISIONNEMENT.COM pour accéder facilement à toutes les autres rétrospectives couvertes par le podcast. Liens du podcast: Épisode 3 — Fantastic Four: https://www.premiervisionnement.com/podcasts Playlist musicale: https://open.spotify.com/playlist/43WS0oy4ytOVjE4mxGq1mf?si=0dba5df83ecf4b42 Feed RSS: https://anchor.fm/s/590d508/podcast/rss Facebook: https://www.facebook.com/premiervisionnement/ Twitter: @visionnement Le podcast est disponible sur la plupart des distributeurs de baladodiffusion. Bonne écoute!",
+      "lien": "https://premiervisionnement.podbean.com/e/fantastic-4-2015-les-quatre-fantastiques/",
+      "audio": "https://mcdn.podbean.com/mf/web/6px7tnzg8zax4655/Premier_Visionnement_702-_Fantastic_4_201570sku.mp3",
+      "image": "https://pbcdn1.podbean.com/imglogo/ep-logo/pbblog3229501/F4_39yyzn.png",
+      "categories_rss": []
+    },
+    {
       "id": "98f25bd38108567d2e7738da",
       "podcast": "premier-visionnement",
       "podcast_nom": "Premier Visionnement",
