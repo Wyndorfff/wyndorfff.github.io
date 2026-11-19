@@ -2,6 +2,18 @@
   "version": 1,
   "episodes": [
     {
+      "id": "e3405bd2faaa5f3231b18c8c",
+      "podcast": "premier-visionnement",
+      "podcast_nom": "Premier Visionnement",
+      "titre": "MCU 2022- Thor: Amour et Tonnerre",
+      "date": "2026-11-19T11:00:00+00:00",
+      "description": "Épisode 36 sur l'Univers Cinématographique de Marvel, Thor: Amour & Tonnerre, sorti en 2022 et réalisé par Taika Waititi. Rendez-vous sur le site du podcast PREMIERVISIONNEMENT.COM pour accéder facilement à toutes les autres rétrospectives couvertes par le podcast. Liens du podcast: Épisode: https://www.premiervisionnement.com/podcasts Playlist musicale: https://open.spotify.com/playlist/43WS0oy4ytOVjE4mxGq1mf?si=0dba5df83ecf4b42 feed rss: https://anchor.fm/s/590d508/podcast/rss Facebook: https://www.facebook.com/premiervisionnement/ Twitter: @visionnement Le podcast est disponible sur la plupart des distributeurs de balado-diffusion. Bonne écoute!",
+      "lien": "https://premiervisionnement.podbean.com/e/mcu-2022-thor-amour-et-tonnerre/",
+      "audio": "https://mcdn.podbean.com/mf/web/g2p683kjfpiqwjdp/Premier_Visionnement_703-_Thor_46g3lw.mp3",
+      "image": "https://pbcdn1.podbean.com/imglogo/ep-logo/pbblog3229501/36_Thor_IV7bbjn.png",
+      "categories_rss": []
+    },
+    {
       "id": "5bd577fb01766ebc17ce3968",
       "podcast": "premier-visionnement",
       "podcast_nom": "Premier Visionnement",
