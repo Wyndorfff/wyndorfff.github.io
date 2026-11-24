@@ -2,6 +2,18 @@
   "version": 1,
   "episodes": [
     {
+      "id": "61c5252243edf0fa045244fe",
+      "podcast": "premier-visionnement",
+      "podcast_nom": "Premier Visionnement",
+      "titre": "Dune 1984- Dune",
+      "date": "2026-11-23T23:00:00+00:00",
+      "description": "Épisode 1 de la rétrospective Dune, Dune, sorti en 1984 et réalisé par David Lynch. Rendez-vous sur le site du podcast PREMIERVISIONNEMENT.COM pour accéder facilement à toutes les autres rétrospectives couvertes par le podcast. Liens du podcast: Épisode 1 — Dune (1984): https://www.premiervisionnement.com/podcasts Playlist musicale: https://open.spotify.com/playlist/43WS0oy4ytOVjE4mxGq1mf?si=0dba5df83ecf4b42 Feed RSS: https://anchor.fm/s/590d508/podcast/rss Facebook: https://www.facebook.com/premiervisionnement/ Twitter: @visionnement Le podcast est disponible sur la plupart des distributeurs de baladodiffusion. Bonne écoute!",
+      "lien": "https://premiervisionnement.podbean.com/e/dune-1984-dune/",
+      "audio": "https://mcdn.podbean.com/mf/web/e6tfgwj3e496sby5/Premier_Visionnement_704-_Dune_847vqtj.mp3",
+      "image": "https://pbcdn1.podbean.com/imglogo/ep-logo/pbblog3229501/01_Logo_Dune_19849roii.png",
+      "categories_rss": []
+    },
+    {
       "id": "e3405bd2faaa5f3231b18c8c",
       "podcast": "premier-visionnement",
       "podcast_nom": "Premier Visionnement",
